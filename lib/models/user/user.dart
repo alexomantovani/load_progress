@@ -1,25 +1,28 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-class User {
+import 'package:equatable/equatable.dart';
+
+class User extends Equatable {
   final String name;
   final String email;
-  final String userId;
-  User({
+  final String usuarioId;
+  const User({
     required this.name,
     required this.email,
-    required this.userId,
+    required this.usuarioId,
   });
+  
 
   User copyWith({
     String? name,
     String? email,
-    String? userId,
+    String? usuarioId,
   }) {
     return User(
       name: name ?? this.name,
       email: email ?? this.email,
-      userId: userId ?? this.userId,
+      usuarioId: usuarioId ?? this.usuarioId,
     );
   }
 
@@ -27,7 +30,7 @@ class User {
     return <String, dynamic>{
       'name': name,
       'email': email,
-      'userId': userId,
+      'usuarioId': usuarioId,
     };
   }
 
@@ -35,7 +38,7 @@ class User {
     return User(
       name: map['name'] as String,
       email: map['email'] as String,
-      userId: map['userId'] as String,
+      usuarioId: map['usuarioId'] as String,
     );
   }
 
@@ -44,18 +47,8 @@ class User {
   factory User.fromJson(String source) => User.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'User(name: $name, email: $email, userId: $userId)';
+  bool get stringify => true;
 
   @override
-  bool operator ==(covariant User other) {
-    if (identical(this, other)) return true;
-  
-    return 
-      other.name == name &&
-      other.email == email &&
-      other.userId == userId;
-  }
-
-  @override
-  int get hashCode => name.hashCode ^ email.hashCode ^ userId.hashCode;
+  List<Object> get props => [name, email, usuarioId];
 }
