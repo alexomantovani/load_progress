@@ -68,7 +68,7 @@ class Exercicios extends Equatable {
   final int tempo;
   final String repeticoes;
   final String grupoMuscularAlvo;
-  final String carga;
+  final List<dynamic> carga;
   const Exercicios({
     required this.nome,
     required this.tempo,
@@ -82,7 +82,7 @@ class Exercicios extends Equatable {
     int? tempo,
     String? repeticoes,
     String? grupoMuscularAlvo,
-    String? carga,
+    List<dynamic>? carga,
   }) {
     return Exercicios(
       nome: nome ?? this.nome,
@@ -106,10 +106,12 @@ class Exercicios extends Equatable {
   factory Exercicios.fromMap(Map<String, dynamic> map) {
     return Exercicios(
       nome: map['nome'] as String,
-      tempo: map['tempo'] as int,
+      tempo: map['tempo'] ?? 0,
       repeticoes: map['repeticoes'] as String,
       grupoMuscularAlvo: map['grupoMuscularAlvo'] as String,
-      carga: map['carga'] as String,
+      carga: List<dynamic>.from(
+        (map['carga'] as List<dynamic>),
+      ),
     );
   }
 
