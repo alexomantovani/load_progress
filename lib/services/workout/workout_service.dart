@@ -6,20 +6,33 @@ import '../../utils/utils.dart';
 import 'package:http/http.dart' as http;
 
 class WorkoutService {
-  Future<Map<String,dynamic>?> createWorkout(String email, String tipoTreino, List<Map<String, dynamic>> exercicios) async {
+  Future<Map<String, dynamic>?> createWorkout(
+      {required String email,
+      required String tipoTreino,
+      required List<dynamic> exercicios}) async {
     final body = {
       "email": email,
       "tipoTreino": tipoTreino,
-      "exercicios": exercicios.toString(),
+      "exercicios": exercicios,
+    };
+
+    final headers = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
     };
 
     try {
-      final response = await http.post(Uri.parse('${Utils.mainUrl}/criarTreino'), body: body);
+      final response = await http.post(
+        Uri.parse('${Utils.mainUrl}/criarTreino'),
+        body: json.encode(body),
+        headers: headers,
+      );
       final responseDecoded = await jsonDecode(response.body);
-      print('UserService Response: $responseDecoded, statuscode: ${response.statusCode}');
+      print(
+          'UserService Response: $responseDecoded, statuscode: ${response.statusCode}');
 
-      if(response.statusCode == 201) {
-        if(responseDecoded != null) {
+      if (response.statusCode == 201) {
+        if (responseDecoded != null) {
           return responseDecoded;
         } else {
           return {"Error": "The response.body is null"};
@@ -34,21 +47,69 @@ class WorkoutService {
   }
 
   Future<List<Workout?>?> listWorkouts(String usuarioId) async {
-    final params = {
-      "usuarioId": usuarioId
-    };
+    final params = {"usuarioId": usuarioId};
 
     try {
-      final response = await http.get(Uri.https(Utils.mainUrl.substring(8), '/listarTreinosDoUsuario', params));
+      final response = await http.get(Uri.https(
+          Utils.mainUrl.substring(8), '/listarTreinosDoUsuario', params));
       final responseDecoded = await jsonDecode(response.body) as List;
-      print('UserService Response: $responseDecoded, statuscode: ${response.statusCode}');
+      print(
+          'UserService Response: $responseDecoded, statusCode: ${response.statusCode}');
 
-      final workouts = responseDecoded.map((e) => Workout.fromMap(e)).toList();
-      
+      final workouts =
+          responseDecoded.map<Workout>((e) => Workout.fromMap(e)).toList();
+
       return workouts;
     } catch (e) {
       print("Error catch: $e");
       return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> updateWorkout(
+      {required String treinoId,
+      required String tipoTreino,
+      required List<Map<String, dynamic>> exercicios}) async {
+    final params = {'treinoId': treinoId};
+
+    final body = {
+      'exercicios': exercicios,
+      'tipoTreino': tipoTreino,
+    };
+
+    try {
+      final response = await http.put(
+        Uri.https(Utils.mainUrl.substring(8), 'atualizarTreino', params),
+        body: jsonEncode(body),
+      );
+
+      final responseDecoded = jsonDecode(response.body);
+
+      print(
+          'UserService Response: $responseDecoded, statusCode: ${response.statusCode}');
+
+      return responseDecoded;
+    } catch (e) {
+      print("Error: $e");
+      return {"Error": e.toString()};
+    }
+  }
+
+  Future<Map<String, dynamic>?> deleteWorkout(String treinoId) async {
+    final params = {"treinoId": treinoId};
+
+    try {
+      final response = await http
+          .put(Uri.https(Utils.mainUrl.substring(8), 'deletarTreino', params));
+      final responseDecoded = jsonDecode(response.body);
+
+      print(
+          'UserService Response: $responseDecoded, statusCode: ${response.statusCode}');
+
+      return responseDecoded;
+    } catch (e) {
+      print("Error: $e");
+      return {"Error": e.toString()};
     }
   }
 }
