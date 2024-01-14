@@ -73,14 +73,14 @@ class WorkoutService {
     final params = {'treinoId': treinoId};
 
     final body = {
-      'exercicios': exercicios,
+      'exercicios': json.encode(exercicios),
       'tipoTreino': tipoTreino,
     };
 
     try {
       final response = await http.put(
         Uri.https(Utils.mainUrl.substring(8), 'atualizarTreino', params),
-        body: jsonEncode(body),
+        body: body,
       );
 
       final responseDecoded = jsonDecode(response.body);
