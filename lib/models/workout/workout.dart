@@ -65,7 +65,7 @@ class Workout extends Equatable {
 
 class Exercicios extends Equatable {
   final String nome;
-  final int tempo;
+  final String tempo;
   final String repeticoes;
   final String grupoMuscularAlvo;
   final List<dynamic> carga;
@@ -79,7 +79,7 @@ class Exercicios extends Equatable {
 
   Exercicios copyWith({
     String? nome,
-    int? tempo,
+    String? tempo,
     String? repeticoes,
     String? grupoMuscularAlvo,
     List<dynamic>? carga,
@@ -106,7 +106,7 @@ class Exercicios extends Equatable {
   factory Exercicios.fromMap(Map<String, dynamic> map) {
     return Exercicios(
       nome: map['nome'] as String,
-      tempo: map['tempo'] ?? 0,
+      tempo: map['tempo'] as String,
       repeticoes: map['repeticoes'] as String,
       grupoMuscularAlvo: map['grupoMuscularAlvo'] as String,
       carga: List<dynamic>.from(
