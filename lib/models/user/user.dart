@@ -12,7 +12,13 @@ class User extends Equatable {
     required this.email,
     required this.usuarioId,
   });
-  
+
+  const User.empty()
+      : this(
+          name: '_empty.name',
+          email: '_empty.email',
+          usuarioId: '_empty.usuarioId',
+        );
 
   User copyWith({
     String? name,
@@ -44,7 +50,8 @@ class User extends Equatable {
 
   String toJson() => json.encode(toMap());
 
-  factory User.fromJson(String source) => User.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory User.fromJson(String source) =>
+      User.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   bool get stringify => true;
