@@ -5,6 +5,9 @@ import 'package:load_progress/models/user/user.dart';
 import 'package:load_progress/utils/utils.dart';
 
 class UserService {
+  const UserService(this._client);
+
+  final http.Client _client;
 
   Future<Map<String,dynamic>?> createUser(String name, String email) async {
     final body = {
@@ -13,7 +16,7 @@ class UserService {
     };
 
     try {
-      final response = await http.post(Uri.parse('${Utils.mainUrl}/cadastrarUsuario'), body: body);
+      final response = await _client.post(Uri.parse('${Utils.mainUrl}/cadastrarUsuario'), body: body);
       final responseDecoded = await jsonDecode(response.body);
       print('UserService Response: $responseDecoded, statuscode: ${response.statusCode}');
 
@@ -37,7 +40,7 @@ class UserService {
     };
 
     try {
-      final response = await http.get(Uri.https(Utils.mainUrl.substring(8), '/obterUsuarioPorNome', params));
+      final response = await _client.get(Uri.https(Utils.mainUrl.substring(8), '/obterUsuarioPorNome', params));
       final responseDecoded = [await jsonDecode(response.body)];
       
       final userlist = responseDecoded.map((e) => User.fromMap(e)).toList();
@@ -54,7 +57,7 @@ class UserService {
     };
 
     try {
-      final response = await http.put(Uri.https(Utils.mainUrl.substring(8), 'atualizarCadastroUsuario', params), body: body);
+      final response = await _client.put(Uri.https(Utils.mainUrl.substring(8), 'atualizarCadastroUsuario', params), body: body);
       final responseDecoded = jsonDecode(response.body);
 
       return responseDecoded;
@@ -70,7 +73,7 @@ class UserService {
     };
 
     try {
-      final response = await http.put(Uri.https(Utils.mainUrl.substring(8), 'deletarCadastroUsuario', params));
+      final response = await _client.put(Uri.https(Utils.mainUrl.substring(8), 'deletarCadastroUsuario', params));
       final responseDecoded = jsonDecode(response.body);
 
       return responseDecoded;
