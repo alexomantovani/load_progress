@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:load_progress/models/user/user.dart';
 import 'package:load_progress/services/user/user_service.dart';
-import 'package:load_progress/utils/utils.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:http/http.dart' as http;
 
