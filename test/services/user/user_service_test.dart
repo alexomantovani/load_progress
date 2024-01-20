@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:load_progress/models/user/user.dart';
 import 'package:load_progress/services/user/user_service.dart';
+import 'package:load_progress/utils/utils.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:http/http.dart' as http;
 
@@ -83,6 +84,39 @@ void main() {
           body: captureAny(named: 'body'),
         ),
       ).captured;
+
+      verifyNoMoreInteractions(client);
+    });
+  });
+
+  group('deleteUser', () {
+    test('should complete successfully when the status code is 200', () async {
+      const usuarioId = 'usuarioId';
+
+      when(
+        () => client.delete(
+          Uri.https(
+            Utils.mainUrl.substring(8),
+            'deletarCadastroUsuario',
+            {'usuarioId': usuarioId},
+          ),
+        ),
+      ).thenAnswer(
+          (_) async => http.Response('user deleted successfully', 200));
+
+      final result = service.deleteUser(usuarioId);
+
+      await expectLater(result, completes);
+
+      verify(
+        () => client.delete(
+          Uri.https(
+            Utils.mainUrl.substring(8),
+            'deletarCadastroUsuario',
+            {'usuarioId': usuarioId},
+          ),
+        ),
+      ).called(1);
 
       verifyNoMoreInteractions(client);
     });
