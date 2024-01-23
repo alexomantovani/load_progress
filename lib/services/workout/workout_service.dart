@@ -6,6 +6,10 @@ import '../../utils/utils.dart';
 import 'package:http/http.dart' as http;
 
 class WorkoutService {
+  final http.Client client;
+
+  WorkoutService({required this.client});
+
   Future<Map<String, dynamic>?> createWorkout(
       {required String email,
       required String tipoTreino,
@@ -22,7 +26,7 @@ class WorkoutService {
     };
 
     try {
-      final response = await http.post(
+      final response = await client.post(
         Uri.parse('${Utils.mainUrl}/criarTreino'),
         body: json.encode(body),
         headers: headers,
@@ -35,13 +39,13 @@ class WorkoutService {
         if (responseDecoded != null) {
           return responseDecoded;
         } else {
-          return {"Error": "The response.body is null"};
+          throw Exception('The response.body is null');
         }
       } else {
-        return responseDecoded;
+        throw Exception(responseDecoded);
       }
     } catch (e) {
-      print('Error: $e');
+      // print('Error: $e');
       return {'Error': e.toString()};
     }
   }
@@ -50,7 +54,7 @@ class WorkoutService {
     final params = {"usuarioId": usuarioId};
 
     try {
-      final response = await http.get(Uri.https(
+      final response = await client.get(Uri.https(
           Utils.mainUrl.substring(8), '/listarTreinosDoUsuario', params));
       final responseDecoded = await jsonDecode(response.body) as List;
       print(
@@ -78,7 +82,7 @@ class WorkoutService {
     };
 
     try {
-      final response = await http.put(
+      final response = await client.put(
         Uri.https(Utils.mainUrl.substring(8), 'atualizarTreino', params),
         body: body,
       );
@@ -99,7 +103,7 @@ class WorkoutService {
     final params = {"treinoId": treinoId};
 
     try {
-      final response = await http
+      final response = await client
           .put(Uri.https(Utils.mainUrl.substring(8), 'deletarTreino', params));
       final responseDecoded = jsonDecode(response.body);
 
