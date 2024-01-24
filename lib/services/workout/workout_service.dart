@@ -31,22 +31,22 @@ class WorkoutService {
         body: json.encode(body),
         headers: headers,
       );
-      final responseDecoded = await jsonDecode(response.body);
-      print(
-          'UserService Response: $responseDecoded, statuscode: ${response.statusCode}');
 
       if (response.statusCode == 201) {
-        if (responseDecoded != null) {
+        if (response.body.isNotEmpty) {
+          final responseDecoded = jsonDecode(
+              '{"Success": "${response.body}", "statusCode": "${response.statusCode}"}');
+          // print(responseDecoded);
           return responseDecoded;
         } else {
-          throw Exception('The response.body is null');
+          throw const FormatException('The response.body is null');
         }
       } else {
-        throw Exception(responseDecoded);
+        throw FormatException(response.body.toString());
       }
-    } catch (e) {
+    } on FormatException catch (e) {
       // print('Error: $e');
-      return {'Error': e.toString()};
+      throw FormatException(e.toString());
     }
   }
 

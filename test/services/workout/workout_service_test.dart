@@ -16,23 +16,29 @@ void main() {
   });
 
   group('createWorkout', () {
-    test(
-        'should complete unsuccessfully when the status code is 400 throw an Exception',
+    test('should complete successfully when the status code is 200 or 201',
         () async {
+      final response = {'Success': 'Workout sucessfully created', 'statusCode': '201'};
+
       when(
         () => client.post(any(),
             body: any(named: 'body'), headers: any(named: 'headers')),
       ).thenAnswer(
         (_) async => http.Response(
-          'Nome de usuário, tipo de treino e exercícios são obrigatórios. O campo exercicios deve ser um array com pelo menos um elemento.',
-          400,
+          'Workout sucessfully created',
+          201,
         ),
       );
 
-      final result = service.createWorkout(
-        email: 'dummy@email.com',
-        tipoTreino: 'dummyTipoTreino',
-        exercicios: [],
+      final result = await service.createWorkout(
+        email: 'teste@teste.com',
+        tipoTreino: 'B',
+        exercicios: [{}],
+      );
+
+      expect(
+        result,
+        equals(response),
       );
 
       verify(
@@ -45,5 +51,72 @@ void main() {
 
       verifyNoMoreInteractions(client);
     });
+
+    test(
+        'should complete unsuccessfully when the status code is 400 and throw an [FormatException]',
+        () async {
+      when(
+        () => client.post(any(),
+            body: any(named: 'body'), headers: any(named: 'headers')),
+      ).thenAnswer(
+        (_) async => http.Response(
+          'FormatException',
+          400,
+        ),
+      );
+
+      final result = service.createWorkout(
+        email: 'dummyemail@dummyemail.com',
+        tipoTreino: 'dummyTipoTreino',
+        exercicios: [],
+      );
+
+      expect(result, throwsFormatException);
+
+      verify(
+        () => client.post(
+          any(),
+          body: any(named: 'body'),
+          headers: any(named: 'headers'),
+        ),
+      ).called(1);
+
+      verifyNoMoreInteractions(client);
+    });
+    test(
+        'should complete unsuccessfully when the status code is 404 and throw an [FormatException]',
+        () async {
+      when(
+        () => client.post(any(),
+            body: any(named: 'body'), headers: any(named: 'headers')),
+      ).thenAnswer(
+        (_) async => http.Response(
+          'Email not found',
+          404,
+        ),
+      );
+
+      final result = service.createWorkout(
+        email: 'dummyemail@dummyemail.com',
+        tipoTreino: 'A',
+        exercicios: [{}],
+      );
+
+      expect(result, throwsFormatException);
+
+      verify(
+        () => client.post(
+          any(),
+          body: any(named: 'body'),
+          headers: any(named: 'headers'),
+        ),
+      ).called(1);
+
+      verifyNoMoreInteractions(client);
+    });
+  });
+
+  group('updateWorkout', () {
+    
   });
 }
