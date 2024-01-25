@@ -87,12 +87,19 @@ class WorkoutService {
         body: body,
       );
 
-      final responseDecoded = jsonDecode(response.body);
+      // final responseDecoded = jsonDecode(response.body);
 
-      print(
-          'UserService Response: $responseDecoded, statusCode: ${response.statusCode}');
-
-      return responseDecoded;
+      if (response.statusCode == 200) {
+        if (response.body.isNotEmpty) {
+          final responseDecoded = jsonDecode(
+              '{"Success": "${response.body}", "statusCode": "${response.statusCode}"}');
+          return responseDecoded;
+        } else {
+          throw throw const FormatException('The response.body is null');
+        }
+      } else {
+        throw FormatException(response.body.toString());
+      }
     } catch (e) {
       print("Error: $e");
       return {"Error": e.toString()};
@@ -103,14 +110,20 @@ class WorkoutService {
     final params = {"treinoId": treinoId};
 
     try {
-      final response = await client
-          .put(Uri.https(Utils.mainUrl.substring(8), 'deletarTreino', params));
-      final responseDecoded = jsonDecode(response.body);
+      final response = await client.delete(
+          Uri.https(Utils.mainUrl.substring(8), 'deletarTreino', params));
 
-      print(
-          'UserService Response: $responseDecoded, statusCode: ${response.statusCode}');
-
-      return responseDecoded;
+      if (response.statusCode == 200) {
+        if (response.body.isNotEmpty) {
+          final responseDecoded = jsonDecode(
+              '{"Success": "${response.body}", "statusCode": "${response.statusCode}"}');
+          return responseDecoded;
+        } else {
+          throw throw const FormatException('The response.body is null');
+        }
+      } else {
+        throw FormatException(response.body.toString());
+      }
     } catch (e) {
       print("Error: $e");
       return {"Error": e.toString()};
