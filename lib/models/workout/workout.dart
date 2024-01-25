@@ -15,6 +15,14 @@ class Workout extends Equatable {
     required this.exercicios,
   });
 
+  Workout.empty()
+      : this(
+          treinoId: '_empty.treinoId',
+          tipoTreino: '_empty.tipoTreino',
+          usuarioId: '_empty.usuarioId',
+          exercicios: List.empty(),
+        );
+
   Workout copyWith({
     String? treinoId,
     String? tipoTreino,
@@ -76,6 +84,15 @@ class Exercicios extends Equatable {
     required this.grupoMuscularAlvo,
     required this.carga,
   });
+
+  Exercicios.empty()
+      : this(
+          nome: '_empty.name',
+          tempo: '_empty.tempo',
+          repeticoes: '_empty.usuarioId',
+          grupoMuscularAlvo: '_empty_grupoMuscularAlvo',
+          carga: List.empty(),
+        );
 
   Exercicios copyWith({
     String? nome,
