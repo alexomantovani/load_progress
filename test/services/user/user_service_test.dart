@@ -15,7 +15,7 @@ void main() {
 
   setUp(() {
     client = MockClient();
-    service = UserService(client);
+    service = UserService(client: client);
     registerFallbackValue(Uri());
   });
 
