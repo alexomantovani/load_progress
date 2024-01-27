@@ -6,9 +6,9 @@ import '../../utils/utils.dart';
 import 'package:http/http.dart' as http;
 
 class WorkoutService {
-  final http.Client client;
+  http.Client? client;
 
-  WorkoutService({required this.client});
+  WorkoutService({this.client});
 
   Future<Map<String, dynamic>?> createWorkout(
       {required String email,
@@ -26,11 +26,17 @@ class WorkoutService {
     };
 
     try {
-      final response = await client.post(
-        Uri.parse('${Utils.mainUrl}/criarTreino'),
-        body: json.encode(body),
-        headers: headers,
-      );
+      final response = client != null
+          ? await client!.post(
+              Uri.parse('${Utils.mainUrl}/criarTreino'),
+              body: json.encode(body),
+              headers: headers,
+            )
+          : await http.post(
+              Uri.parse('${Utils.mainUrl}/criarTreino'),
+              body: json.encode(body),
+              headers: headers,
+            );
 
       if (response.statusCode == 201) {
         if (response.body.isNotEmpty) {
@@ -54,11 +60,14 @@ class WorkoutService {
     final params = {"usuarioId": usuarioId};
 
     try {
-      final response = await client.get(Uri.https(
-          Utils.mainUrl.substring(8), '/listarTreinosDoUsuario', params));
+      final response = client != null
+          ? await client!.get(Uri.https(
+              Utils.mainUrl.substring(8), '/listarTreinosDoUsuario', params))
+          : await http.get(Uri.https(
+              Utils.mainUrl.substring(8), '/listarTreinosDoUsuario', params));
       final responseDecoded = await jsonDecode(response.body) as List;
       print(
-          'UserService Response: $responseDecoded, statusCode: ${response.statusCode}');
+          'WorkoutService Response: ${response.body}, statusCode: ${response.statusCode}');
 
       final workouts =
           responseDecoded.map<Workout>((e) => Workout.fromMap(e)).toList();
@@ -82,10 +91,15 @@ class WorkoutService {
     };
 
     try {
-      final response = await client.put(
-        Uri.https(Utils.mainUrl.substring(8), 'atualizarTreino', params),
-        body: body,
-      );
+      final response = client != null
+          ? await client!.put(
+              Uri.https(Utils.mainUrl.substring(8), 'atualizarTreino', params),
+              body: body,
+            )
+          : await http.put(
+              Uri.https(Utils.mainUrl.substring(8), 'atualizarTreino', params),
+              body: body,
+            );
 
       // final responseDecoded = jsonDecode(response.body);
 
@@ -110,8 +124,13 @@ class WorkoutService {
     final params = {"treinoId": treinoId};
 
     try {
-      final response = await client.delete(
-          Uri.https(Utils.mainUrl.substring(8), 'deletarTreino', params));
+      final response = client != null
+          ? await client!.delete(
+              Uri.https(Utils.mainUrl.substring(8), 'deletarTreino', params),
+            )
+          : await http.delete(
+              Uri.https(Utils.mainUrl.substring(8), 'deletarTreino', params),
+            );
 
       if (response.statusCode == 200) {
         if (response.body.isNotEmpty) {

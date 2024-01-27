@@ -1,4 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:load_progress/models/user/user.dart';
 import 'package:load_progress/services/user/user_service.dart';
 import 'package:load_progress/views/home/home_page.dart';
 
@@ -12,6 +15,8 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   late TextEditingController _nameTextEditingController;
   late TextEditingController _emailTextEditingController;
+  bool isLoading = false;
+  User? _user;
 
   @override
   void initState() {
@@ -25,7 +30,6 @@ class _SignUpPageState extends State<SignUpPage> {
         _nameTextEditingController.text, _emailTextEditingController.text);
 
     if (response!['message'] != null) {
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           duration: const Duration(seconds: 2),
@@ -33,19 +37,43 @@ class _SignUpPageState extends State<SignUpPage> {
           backgroundColor: Colors.blue,
         ),
       );
+      setState(() => isLoading = false);
       await Future.delayed(const Duration(seconds: 2))
           .whenComplete(() => Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const MyHomePage(title: 'Home'),
+                builder: (context) => const MyHomePage(),
               )));
     } else {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          duration: const Duration(seconds: 2),
-          content: Text(response['error']),
-          backgroundColor: Colors.red,
+      if (response['error'].toString().contains('uso')) {
+        setState(() => isLoading = false);
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => const MyHomePage(),
+        ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            duration: const Duration(seconds: 2),
+            content: Text(response['error']),
+            backgroundColor: Colors.red,
+          ),
+        );
+        setState(() => isLoading = false);
+      }
+    }
+  }
+
+  getUser() async {
+    setState(() => isLoading = true);
+    final user = await UserService().getUser(_nameTextEditingController.text);
+    if (user != null) {
+      setState(() => isLoading = false);
+      _user = user[0];
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => MyHomePage(user: _user,),
         ),
       );
+    } else {
+      createUser();
     }
   }
 
@@ -113,7 +141,15 @@ class _SignUpPageState extends State<SignUpPage> {
                 onTap: () async {
                   if (_nameTextEditingController.text.isNotEmpty &&
                       _emailTextEditingController.text.isNotEmpty) {
-                    createUser();
+                    getUser();
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        duration: Duration(seconds: 2),
+                        content: Text('Preencha os campos obritgatórios'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
                   }
                 },
                 child: Container(
@@ -121,15 +157,19 @@ class _SignUpPageState extends State<SignUpPage> {
                     color: Colors.blue,
                     borderRadius: BorderRadius.circular(8.0),
                   ),
+                  width: 140.0,
                   padding: const EdgeInsets.all(8.0),
-                  child: const Text(
-                    'Cadastrar',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  child: isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(color: Colors.white))
+                      : const Text(
+                          'Cadastrar',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                 ),
               ),
             ],
