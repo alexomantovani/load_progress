@@ -12,6 +12,7 @@ class GetUserBloc extends Bloc<GetUserEvent, GetUserState> {
   GetUserBloc() : super(GetUserInitialState()) {
     on<GetUserRemoteSourceEvent>((event, emit) async {
       emit(GetUserInitialState());
+      emit(GetUserLoadingState());
       final response = await service.getUser(event.name);
 
       if(response != null) {
