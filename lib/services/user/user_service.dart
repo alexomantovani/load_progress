@@ -22,8 +22,8 @@ class UserService {
               body: body);
 
       final responseDecoded = await jsonDecode(response.body);
-      print(
-          'UserService Response: $responseDecoded, statuscode: ${response.statusCode}');
+      // print(
+      //     'UserService Response: $responseDecoded, statuscode: ${response.statusCode}');
 
       if (response.statusCode == 201) {
         if (responseDecoded != null) {
@@ -49,10 +49,14 @@ class UserService {
           : await http.get(Uri.https(
               Utils.mainUrl.substring(8), '/obterUsuarioPorNome', params));
 
-      final responseDecoded = [await jsonDecode(response.body)];
+      if (response.statusCode == 200) {
+        final responseDecoded = [await jsonDecode(response.body)];
 
-      final userlist = responseDecoded.map((e) => User.fromMap(e)).toList();
-      return userlist;
+        final userlist = responseDecoded.map((e) => User.fromMap(e)).toList();
+        return userlist;
+      } else {
+        return null;
+      }
     } catch (e) {
       print("Error: $e");
       return null;
@@ -90,7 +94,7 @@ class UserService {
               Utils.mainUrl.substring(8), 'deletarCadastroUsuario', params))
           : await http.delete(Uri.https(
               Utils.mainUrl.substring(8), 'deletarCadastroUsuario', params));
-              
+
       final responseDecoded = jsonDecode(response.body);
 
       return responseDecoded;
