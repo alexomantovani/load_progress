@@ -47,6 +47,14 @@ class _SignUpPageState extends State<SignUpPage> {
         listener: (context, state) {
           if (state is GetUserFailureState) {
             createUser();
+          } else if (state is GetUserLoadedState) {
+            if (state.user.isNotEmpty) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const MyHomePage(),
+                ),
+              );
+            }
           }
         },
         child: BlocListener<SignUpBloc, SignUpState>(
@@ -178,22 +186,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                           );
                         } else if (state is GetUserLoadedState) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            width: 140.0,
-                            padding: const EdgeInsets.all(8.0),
-                            child: const Text(
-                              'Cadastrar',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          );
+                          return const SizedBox();
                         } else {
                           return BlocBuilder<SignUpBloc, SignUpState>(
                             builder: (context, state) {
