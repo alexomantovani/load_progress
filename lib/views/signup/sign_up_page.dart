@@ -6,6 +6,8 @@ import 'package:load_progress/views/home/home_page.dart';
 import 'package:load_progress/views/signup/bloc/getUser/get_user_bloc.dart';
 import 'package:load_progress/views/signup/bloc/signup/sign_up_bloc.dart';
 
+import '../../models/user/user.dart';
+
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
@@ -16,6 +18,7 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   late TextEditingController _nameTextEditingController;
   late TextEditingController _emailTextEditingController;
+  late User? user;
 
   @override
   void initState() {
@@ -49,9 +52,10 @@ class _SignUpPageState extends State<SignUpPage> {
             createUser();
           } else if (state is GetUserLoadedState) {
             if (state.user.isNotEmpty) {
+              user = state.user.first;
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => const MyHomePage(),
+                  builder: (context) => MyHomePage(user: state.user[0],),
                 ),
               );
             }
@@ -69,7 +73,7 @@ class _SignUpPageState extends State<SignUpPage> {
               );
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => const MyHomePage(),
+                  builder: (context) => MyHomePage(user: user!),
                 ),
               );
             } else if (state is SignUpFailureState) {

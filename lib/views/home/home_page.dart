@@ -26,12 +26,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   getWorkouts() async {
     if (widget.user != null) {
+      print(widget.user!.email);
       final response =
           await WorkoutService().listWorkouts(widget.user!.usuarioId);
       if (response != null && response.isNotEmpty) {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => const WorkoutForm(),
+            builder: (context) => WorkoutForm(email: widget.user!.email),
           ),
         );
       }
@@ -69,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
             GestureDetector(
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => const WorkoutForm(),
+                  builder: (context) => WorkoutForm(email: widget.user != null ? widget.user!.email : ''),
                 ),
               ),
               child: Container(
