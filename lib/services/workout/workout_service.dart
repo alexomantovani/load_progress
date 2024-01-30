@@ -10,10 +10,11 @@ class WorkoutService {
 
   WorkoutService({this.client});
 
-  Future<Map<String, dynamic>?> createWorkout(
-      {required String email,
-      required String tipoTreino,
-      required List<dynamic> exercicios}) async {
+  Future<Map<String, dynamic>?> createWorkout({
+    required String email,
+    required String tipoTreino,
+    required List<dynamic> exercicios,
+  }) async {
     final body = {
       "email": email,
       "tipoTreino": tipoTreino,
@@ -41,7 +42,7 @@ class WorkoutService {
       if (response.statusCode == 201) {
         if (response.body.isNotEmpty) {
           final responseDecoded = jsonDecode(
-              '{"Success": "${response.body}", "statusCode": "${response.statusCode}"}');
+              '{"success": "${jsonDecode(response.body)}", "statusCode": "${response.statusCode}"}');
           // print(responseDecoded);
           return responseDecoded;
         } else {
