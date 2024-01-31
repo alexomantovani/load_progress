@@ -1,7 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:load_progress/services/workout/workout_service.dart';
+import 'package:load_progress/views/home/bloc/get_workouts_bloc.dart';
 import 'package:load_progress/views/workout/workout_form.dart';
 
 import '../../models/user/user.dart';
@@ -55,46 +57,66 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            const Spacer(flex: 3),
-            const Text(
-              'Nenhum treino cadastrado',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const Spacer(),
-            GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => WorkoutForm(email: widget.user != null ? widget.user!.email : ''),
-                ),
-              ),
-              child: Container(
+        child: BlocBuilder<GetWorkoutsBloc, GetWorkoutsState>(
+          builder: (context, state) {
+            if (state is GetWorkoutsLoadedState) {
+              return Container(
                 decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(16.0),
+                    color: Colors.blueAccent.shade200),
+                child: Column(
+                  children: [Text(state.workouts[0]!.tipoTreino)],
                 ),
-                width: 140.0,
-                padding: const EdgeInsets.all(8.0),
-                child: isLoading
-                    ? const Center(
-                        child: CircularProgressIndicator(color: Colors.white))
-                    : const Text(
-                        'Cadastrar',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                        ),
+              );
+            } else if (state is GetWorkoutsLoadingState) {
+              return const CircularProgressIndicator();
+            } else {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  const Spacer(flex: 3),
+                  const Text(
+                    'Nenhum treino cadastrado',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => WorkoutForm(
+                            email:
+                                widget.user != null ? widget.user!.email : ''),
                       ),
-              ),
-            ),
-            const Spacer(flex: 3),
-          ],
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      width: 140.0,
+                      padding: const EdgeInsets.all(8.0),
+                      child: isLoading
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                  color: Colors.white))
+                          : const Text(
+                              'Cadastrar',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                    ),
+                  ),
+                  const Spacer(flex: 3),
+                ],
+              );
+            }
+          },
         ),
       ),
     );
