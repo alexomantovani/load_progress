@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:load_progress/services/workout/workout_service.dart';
 import 'package:load_progress/views/home/bloc/get_workouts_bloc.dart';
 import 'package:load_progress/views/workout/workout_form.dart';
 
@@ -22,22 +21,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    getWorkouts();
     super.initState();
+    getWorkouts();
   }
 
   getWorkouts() async {
     if (widget.user != null) {
-      print(widget.user!.email);
-      final response =
-          await WorkoutService().listWorkouts(widget.user!.usuarioId);
-      if (response != null && response.isNotEmpty) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => WorkoutForm(email: widget.user!.email),
-          ),
-        );
-      }
+      BlocProvider.of<GetWorkoutsBloc>(context)
+          .add(ListWorkoutsEvent(widget.user!.usuarioId));
     }
   }
 
