@@ -87,14 +87,14 @@ class _WorkoutFormState extends State<WorkoutForm> {
                         CreateWorkoutEvent(
                           email: widget.email,
                           tipoTreino: _workoutTypeController.text,
-                          body: {
-                            'exercicios': {
+                          body: [
+                            {
                               'nome': _workoutNameController.text,
                               'grupoMuscularAlvo':
                                   _workoutMuscleGroupController.text,
                               'repeticoes': _workoutRepsController.text,
-                            }
-                          },
+                            },
+                          ],
                         ),
                       );
                     },

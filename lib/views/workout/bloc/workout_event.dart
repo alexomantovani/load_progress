@@ -8,7 +8,7 @@ sealed class WorkoutEvent extends Equatable {
 }
 
 final class CreateWorkoutEvent extends WorkoutEvent {
-  final dynamic body;
+  final List<dynamic> body;
   final String email;
   final String tipoTreino;
 
