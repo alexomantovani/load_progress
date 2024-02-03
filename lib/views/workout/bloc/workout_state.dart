@@ -9,15 +9,17 @@ sealed class WorkoutState extends Equatable {
 
 final class WorkoutInitialState extends WorkoutState {}
 
+final class WorkoutLoadingState extends WorkoutState {}
+
 final class CreatingWorkoutState extends WorkoutState {}
 
 final class WorkoutCreatedState extends WorkoutState {
-  final Map<String, dynamic> response;
+  final Map<String, dynamic>? response;
 
   const WorkoutCreatedState({required this.response});
 
   @override
-  List<Object> get props => [response];
+  List<Object> get props => [response!];
 }
 
 final class WorkoutFailureState extends WorkoutState {

@@ -26,15 +26,16 @@ class _WorkoutFormState extends State<WorkoutForm> {
     return Scaffold(
       body: BlocListener<WorkoutBloc, WorkoutState>(
         listener: (context, state) {
-          if (state is WorkoutCreatedState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                duration: const Duration(seconds: 2),
-                content: Text(state.response['success']),
-                backgroundColor: Colors.blue,
-              ),
-            );
-          }
+          print('state $state');
+          // if (state is WorkoutCreatedState) {
+          //   ScaffoldMessenger.of(context).showSnackBar(
+          //     SnackBar(
+          //       duration: const Duration(seconds: 2),
+          //       content: Text(state.response['success']),
+          //       backgroundColor: Colors.blue,
+          //     ),
+          //   );
+          // }
         },
         child: SafeArea(
           child: SingleChildScrollView(

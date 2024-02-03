@@ -16,7 +16,7 @@ class GetWorkoutsBloc extends Bloc<GetWorkoutsEvent, GetWorkoutsState> {
 
       final result = await service.listWorkouts(event.usuarioId);
 
-      if(result != null) {
+      if(result != null && result.isNotEmpty) {
         emit(GetWorkoutsLoadedState(result));
       } else {
         emit(const GetWorkoutsFailureState('APIFailure'));

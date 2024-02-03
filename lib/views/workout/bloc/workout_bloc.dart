@@ -11,24 +11,20 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   WorkoutBloc() : super(WorkoutInitialState()) {
     on<CreateWorkoutEvent>((event, emit) async {
       emit(WorkoutInitialState());
-      emit(WorkoutInitialState());
+      emit(WorkoutLoadingState());
       final result = await service.createWorkout(
         email: event.email,
         tipoTreino: event.tipoTreino,
-        exercicios: [event.body],
+        exercicios: event.body,
       );
-      if (result != null) {
-        final success = result['success'] as bool?;
-        if (success != null) {
-          if (success) {
-            emit(WorkoutCreatedState(response: result));
-          } else {
-            emit(const WorkoutFailureState(
-                message: 'Não foi possível criar o treino'));
-          }
-        } else {
-          emit(const WorkoutFailureState(message: 'Success value is null'));
-        }
+      if (result.isNotEmpty) {
+        
+        // if (success) {
+          emit(WorkoutCreatedState(response: result));
+        // } else {
+        //   emit(const WorkoutFailureState(
+        //       message: 'Não foi possível criar o treino'));
+        // }
       } else {
         print('null');
         emit(const WorkoutFailureState(message: 'Server down'));

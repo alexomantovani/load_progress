@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:load_progress/views/home/bloc/get_workouts_bloc.dart';
 import 'package:load_progress/views/workout/workout_form.dart';
+import 'package:load_progress/views/workout/workout_page.dart';
 
 import '../../models/user/user.dart';
 
@@ -51,12 +52,63 @@ class _MyHomePageState extends State<MyHomePage> {
         child: BlocBuilder<GetWorkoutsBloc, GetWorkoutsState>(
           builder: (context, state) {
             if (state is GetWorkoutsLoadedState) {
-              return Container(
-                decoration: BoxDecoration(
+              return ListView.builder(
+                itemCount: state.workouts.length,
+                itemBuilder: (context, index) => Container(
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16.0),
-                    color: Colors.blueAccent.shade200),
-                child: Column(
-                  children: [Text(state.workouts[0]!.tipoTreino)],
+                    color: Colors.blueAccent.shade200,
+                  ),
+                  height: 200.0,
+                  margin: const EdgeInsets.all(12.0),
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      state.workouts.isEmpty
+                          ? const Center(
+                              child: Text(
+                                'Nenhum treino cadastrado',
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            )
+                          : GestureDetector(
+                              onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => WorkoutPage(
+                                    treonoId: state.workouts[index]!.treinoId,
+                                  ),
+                                ),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    state.workouts[0]!.tipoTreino,
+                                    style: const TextStyle(
+                                      fontSize: 22,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Text(
+                                    state.workouts[0]!.exercicios[0]
+                                        .grupoMuscularAlvo,
+                                    style: const TextStyle(
+                                      fontSize: 22,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                    ],
+                  ),
                 ),
               );
             } else if (state is GetWorkoutsLoadingState) {
