@@ -122,13 +122,15 @@ class Exercicios extends Equatable {
 
   factory Exercicios.fromMap(Map<String, dynamic> map) {
     return Exercicios(
-      nome: map['nome'] as String,
-      tempo: map['tempo'] as String,
-      repeticoes: map['repeticoes'] as String,
-      grupoMuscularAlvo: map['grupoMuscularAlvo'] as String,
-      carga: List<dynamic>.from(
-        (map['carga'] as List<dynamic>),
-      ),
+      nome: map['nome'] ?? '',
+      tempo: map['tempo'] ?? '',
+      repeticoes: map['repeticoes'] ?? '',
+      grupoMuscularAlvo: map['grupoMuscularAlvo'] ?? '',
+      carga: map['carga'] != null
+          ? List<dynamic>.from(
+              (map['carga'] as List<dynamic>),
+            )
+          : [],
     );
   }
 

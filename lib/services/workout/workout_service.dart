@@ -10,7 +10,7 @@ class WorkoutService {
 
   WorkoutService({this.client});
 
-  Future<Map<String, dynamic>?> createWorkout({
+  Future<Map<String, dynamic>> createWorkout({
     required String email,
     required String tipoTreino,
     required List<dynamic> exercicios,
@@ -18,7 +18,7 @@ class WorkoutService {
     final body = {
       "email": email,
       "tipoTreino": tipoTreino,
-      "exercicios": exercicios,
+      "exercicios": exercicios[0],
     };
 
     final headers = {
@@ -39,11 +39,13 @@ class WorkoutService {
               headers: headers,
             );
 
+            print('response: ${response.body} , statuscode: ${response.statusCode}');
+
       if (response.statusCode == 201) {
         if (response.body.isNotEmpty) {
-          final responseDecoded = jsonDecode(
+          final Map<String, dynamic> responseDecoded = jsonDecode(
               '{"success": "${jsonDecode(response.body)}", "statusCode": "${response.statusCode}"}');
-          // print(responseDecoded);
+          print(responseDecoded);
           return responseDecoded;
         } else {
           throw const FormatException('The response.body is null');
