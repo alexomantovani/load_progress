@@ -18,7 +18,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool isLoading = false;
 
   @override
   void initState() {
@@ -54,36 +53,36 @@ class _MyHomePageState extends State<MyHomePage> {
             if (state is GetWorkoutsLoadedState) {
               return ListView.builder(
                 itemCount: state.workouts.length,
-                itemBuilder: (context, index) => Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16.0),
-                    color: Colors.blueAccent.shade200,
-                  ),
-                  height: 200.0,
-                  margin: const EdgeInsets.all(12.0),
-                  width: double.infinity,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      state.workouts.isEmpty
-                          ? const Center(
-                              child: Text(
-                                'Nenhum treino cadastrado',
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            )
-                          : GestureDetector(
-                              onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => WorkoutPage(
-                                    treonoId: state.workouts[index]!.treinoId,
-                                  ),
-                                ),
-                              ),
-                              child: Column(
+                itemBuilder: (context, index) => state.workouts.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'Nenhum treino cadastrado',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      )
+                    : GestureDetector(
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => WorkoutPage(
+                              treonoId: state.workouts[index]!.treinoId,
+                            ),
+                          ),
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16.0),
+                            color: Colors.blue,
+                          ),
+                          height: 200.0,
+                          margin: const EdgeInsets.all(12.0),
+                          width: double.infinity,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -106,10 +105,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                 ],
                               ),
-                            ),
-                    ],
-                  ),
-                ),
+                            ],
+                          ),
+                        ),
+                      ),
               );
             } else if (state is GetWorkoutsLoadingState) {
               return const CircularProgressIndicator();
@@ -141,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       width: 140.0,
                       padding: const EdgeInsets.all(8.0),
-                      child: isLoading
+                      child: state is GetWorkoutsInitialState
                           ? const Center(
                               child: CircularProgressIndicator(
                                   color: Colors.white))
@@ -161,6 +160,27 @@ class _MyHomePageState extends State<MyHomePage> {
             }
           },
         ),
+      ),
+      floatingActionButton: BlocBuilder<GetWorkoutsBloc, GetWorkoutsState>(
+        builder: (context, state) {
+          if (state is GetWorkoutsLoadedState) {
+            return FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        WorkoutForm(email: widget.user!.email),
+                  ),
+                );
+              },
+              label: const Text('Adicionar treino'),
+              icon: const Icon(Icons.add),
+              backgroundColor: Colors.white,
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
       ),
     );
   }
