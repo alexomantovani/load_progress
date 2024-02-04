@@ -39,13 +39,13 @@ class WorkoutService {
               headers: headers,
             );
 
-            print('response: ${response.body} , statuscode: ${response.statusCode}');
+            // print('response: ${response.body} , statuscode: ${response.statusCode}');
 
       if (response.statusCode == 201) {
         if (response.body.isNotEmpty) {
           final Map<String, dynamic> responseDecoded = jsonDecode(
               '{"success": "${jsonDecode(response.body)}", "statusCode": "${response.statusCode}"}');
-          print(responseDecoded);
+          // print(responseDecoded);
           return responseDecoded;
         } else {
           throw const FormatException('The response.body is null');
@@ -69,8 +69,8 @@ class WorkoutService {
           : await http.get(Uri.https(
               Utils.mainUrl.substring(8), '/listarTreinosDoUsuario', params));
       final responseDecoded = await jsonDecode(response.body) as List;
-      print(
-          'WorkoutService Response: ${response.body}, statusCode: ${response.statusCode}');
+      // print(
+      //     'WorkoutService Response: ${response.body}, statusCode: ${response.statusCode}');
 
       final workouts =
           responseDecoded.map<Workout>((e) => Workout.fromMap(e)).toList();
